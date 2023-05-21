@@ -123,6 +123,51 @@ client.on('messageCreate', (message) => {
       content: 'THIS SHITS ON YO',
   })
     console.log("working");
+  } else if (message.content.startsWith('!remove')) {
+    const eventName = message.content.slice(8).trim();
+
+    if (!eventName) {
+      message.channel.send('Please provide the name of the event to remove.');
+      return;
+    }
+
+    fs.readFile(eventFile, 'utf-8', (err, data) => {
+      if (err) {
+        console.error(err);
+        message.channel.send('An error occurred while reading the events file.');
+        return;
+      }
+
+      let events = [];
+
+      try {
+        events = JSON.parse(data);
+      } catch (err) {
+        console.error(err);
+        message.channel.send('An error occurred while parsing the events data.');
+        return;
+      }
+
+      const eventIndex = events.findIndex((event) => event.name === eventName);
+
+      if (eventIndex === -1) {
+        message.channel.send(`Event "${eventName}" not found.`);
+        return;
+      }
+
+      events.splice(eventIndex, 1);
+
+      fs.writeFile(eventFile, JSON.stringify(events), 'utf-8', (err) => {
+        if (err) {
+          console.error(err);
+          message.channel.send('An error occurred while removing the event.');
+          return;
+        }
+
+        console.log(`Event "${eventName}" removed successfully.`);
+        message.channel.send(`Event "${eventName}" removed successfully.`);
+      });
+    });
   }
 });
 
