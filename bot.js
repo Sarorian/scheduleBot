@@ -13,7 +13,6 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', (message) => {
-  console.log(`Received message: ${message.content}`);
 
   if (message.author.bot) return;
 
@@ -143,7 +142,6 @@ function scheduleEventReminders() {
   console.log("started event reminder checker");
   setInterval(() => {
     fs.readFile(eventFile, 'utf-8', (err, data) => {
-      console.log("events file checked");
       if (err) {
         console.error(err);
         return;
@@ -160,7 +158,6 @@ function scheduleEventReminders() {
 
       const currentTime = new Date();
       currentTime.setHours(currentTime.getHours() - 6); //Handle the offset from the server
-      console.log(currentTime);
       events.forEach((event) => {
         const eventDate = parseISO(event.date);
         const timeUntilEvent = differenceInMilliseconds(eventDate, currentTime);
